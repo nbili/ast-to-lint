@@ -1,5 +1,5 @@
-const { parse } = require("@babel/parser");
-const traverse = require("@babel/traverse").default;
+import { parse } from "@babel/parser";
+import traverse from "@babel/traverse";
 
 const code = `2 + ( 4 * 8)`;
 
