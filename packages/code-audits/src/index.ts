@@ -11,6 +11,8 @@ const files = glob.sync(
   )
 );
 
+const propsAndValues: Record<string, string[]> = {};
+
 files.forEach((file) => {
   const contents = fs.readFileSync(file).toString();
 
@@ -28,10 +30,38 @@ files.forEach((file) => {
             attribute.name.type === "JSXIdentifier"
           ) {
             const propName = attribute.name.name;
-            console.log(propName);
+
+            if (attribute.value == null) return;
+
+            let value;
+            if (attribute.value.type === "StringLiteral") {
+              value = attribute.value.value;
+            } else {
+              value = attribute?.value?.type;
+            }
+
+            if (propsAndValues[propName]) {
+              propsAndValues[propName].push(value);
+            } else {
+              propsAndValues[propName] = [value];
+            }
           }
         });
       }
     },
   });
 });
+
+console.log(propsAndValues);
+
+for (let propName in propsAndValues) {
+  console.group();
+  console.log(`${propName} (${propsAndValues[propName].length})`);
+  console.group();
+  for (let value in propsAndValues[propName].sort()) {
+    console.log(propsAndValues[propName][value]);
+  }
+
+  console.groupEnd();
+  console.groupEnd();
+}
